@@ -28,14 +28,17 @@ Modular BLIP-2–style stack (~3.5B params loaded, ~500M trained): Image → Fie
 
 ---
 
-## Project layout
-RECON/ 
-├── dinov2_vision_encoder.py # FieldAwareMoE 
-├── qformer_bridge.py # QFormer + LLMProjector 
-├── baseline_vlm.py # main model 
-├── train_full_vlm.py # Training 
-├── inference_vlm.py # Inference
-├── evaluate.py # NLGM metrics (pycocoevalcap) 
+## Project Layout
+
+```text
+RECON/
+├── dinov2_vision_encoder.py      # Vision encoder (DINOv2 + FieldAwareMoE)
+├── qformer_bridge.py             # Q-Former bridge and LLM projector
+├── baseline_vlm.py               # Main RECON vision-language model
+├── train_full_vlm.py             # Training pipeline
+├── inference_vlm.py              # Inference and report generation
+└── evaluate.py                   # Evaluation (NLGM metrics via pycocoevalcap)
+```
 
 ---
 
