@@ -1,5 +1,9 @@
 # RECON
 
+<p align="center">
+<img src="assets/webapp.png" width="900">
+</p>
+
 RECON is a Vision-language model for automated damage assessment and report generation on reinforced concrete (RC) beam–column joints.
 Given a joint image, RECON produces a structured engineering report covering joint type, damage types, failure mechanism, severity (joint + beam), and a free-text analysis.
 
@@ -8,6 +12,10 @@ Given a joint image, RECON produces a structured engineering report covering joi
 ## What it does
 
 RECON demonstrates high precision and strong performance in automated report generation for reinforced concrete beam–column joint damage assessment.
+
+<p align="center">
+<img src="assets/attention_maps.png" width="900">
+</p>
 
 ---
 
