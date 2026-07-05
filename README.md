@@ -1,2 +1,63 @@
-# RECON-A-Vision-Language-Model-for-Automated-Damage-Assessment-and-Reporting-of-RC-Beam-Column-Joints
-RECON is a Vision-Language Model for Automated Damage Assesment and Report generation
+# RECON
+
+<p align="center">
+<img src="assets/webapp.png" width="900">
+</p>
+
+RECON is a Vision-language model for automated damage assessment and report generation on reinforced concrete (RC) beam–column joints.
+Given a joint image, RECON produces a structured engineering report covering joint type, damage types, failure mechanism, severity (joint + beam), and a free-text analysis.
+
+---
+
+## What it does
+
+RECON demonstrates high precision and strong performance in automated report generation for reinforced concrete beam–column joint damage assessment.
+
+<p align="center">
+<img src="assets/attention_maps.png" width="900">
+</p>
+
+---
+
+## Architecture
+
+Modular BLIP-2–style stack (~3.5B params loaded, ~500M trained): Image → FieldAwareMoE (DINOv2 + field MoE) → Q-Former (BLIP-2 + aux classification heads) → LLMProjector → LLaMA-3.2-3B (mostly frozen) → Structured report
+
+| Module | File | Role |
+|--------|------|------|
+| Vision encoder | `dinov2_vision_encoder.py` | DINOv2 + per-field MoE → 261 tokens |
+| Bridge | `qformer_bridge.py` | BLIP-2 Q-Former + form heads → 32 tokens |
+| VLM wrapper | `baseline_vlm.py` | Fuses visual tokens into LLaMA |
+| Training | `train_full_vlm.py` | SCST fine-tuning + aux losses |
+
+**Field-aware MoE** routes vision through 4 experts per semantic field: joint, damage, location, severity_j, severity_b.
+
+**Aux heads** on Q-Former tokens 0–8 supervise joint type, failure mode, severities, and multi-label damage — this is the FPM path.
+
+---
+
+## Project Layout
+
+```text
+RECON/
+├── dinov2_vision_encoder.py      # Vision encoder (DINOv2 + FieldAwareMoE)
+├── qformer_bridge.py             # Q-Former bridge and LLM projector
+├── baseline_vlm.py               # Main RECON vision-language model
+├── train_full_vlm.py             # Training pipeline
+├── inference_vlm.py              # Inference and report generation
+└── evaluate.py                   # Evaluation (NLGM metrics via pycocoevalcap)
+```
+
+---
+
+## Requirements
+- Python 3.10+
+- CUDA GPU (tested on single RTX 5090)
+- Hugging Face access for:
+  - `facebook/dinov2-base`
+  - `Salesforce/blip2-opt-2.7b`
+  - `meta-llama/Llama-3.2-3B-Instruct`
+    
+```bash
+pip install torch torchvision transformers pandas pillow tqdm nltk
+pip install pycocoevalcap bert-score rouge-score tabulate
